@@ -8,11 +8,11 @@ The increasing demand for takeaway services, especially post-pandemic, has made 
 
 Objective:
 The objective of this project is to design and develop a user-friendly, efficient Hotel Takeaway Management System that:
-•	Streamlines order placement and tracking
-•	Provides real-time status updates for orders
-•	Facilitates role-based access for administrators and kitchen staff
-•	Ensures efficient inventory and kitchen order management
-•	Reduces human errors and enhances operational transparency
+- Streamlines order placement and tracking
+- Provides real-time status updates for orders
+- Facilitates role-based access for administrators and kitchen staff
+- Ensures efficient inventory and kitchen order management
+- Reduces human errors and enhances operational transparency
 
 Client Description:
 This system is intended for hotels, restaurants, and food service businesses that offer takeaway services. The clients may range from small independent hotels to large hotel chains looking to modernize their operations, enhance service quality, and improve customer satisfaction through a robust digital order management system.
