@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>html css</title>
+    </head>
+    <body>
+        <center>
+            <h1>Student Registration Form</h1></center>
+        <form id="student">
+            <label for="name">Name:</label><br>
+            <input type="text" name="name" placeholder="Enter your name:" required><br>
+            <label for="age" required>Age:</label><br>
+            <input type="number" name="age" placeholder="Enter your age" required><br>
+            <label for="gender">Gender:</label><br>
+            <input type="radio" name="gender" value="male" >Male
+            <input type="radio" name="gender" value="female">female<br>
+            <label for="course">Course:</label><br>
+            <select id="course">
+                <option value="css">Css</option>
+                <option value="html">HTML</option>
+                <option value="Javascript">Javascript</option>
+
+            </select><br><br>
+            <label for="edu">Certificate That I have:</label><br>
+            <input type="checkbox" value="10" name="edu">10
+            <input type="checkbox" value="12" name="edu">12
+            <input type="checkbox" value="11" name="edu">11<br><br>
+            <button type="button" onclick="addtable()">Add Student</button>
+            
+        </form>
+        <br>
+        <br>
+        <h3> After clicking add student please check wheather your name is present in that table</h3>
+        <center><h2>Student Table</h2>
+        <table border="2px">
+            <thead>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Course</th>
+                <th>Cerificate</th>
+
+            </thead>
+            <tbody id="new">
+
+            </tbody>
+        </table></center>
+        <script>
+            var stu=[];
+            
+            function addtable()
+            {
+                var form=document.getElementById("student");
+                var name=form.name.value;
+                var age=form.age.value;
+                var gender=form.gender.value;
+                var course=form.course.value;
+                var certi=[];
+                var checkbox=form.querySelectorAll('input[name="edu"]:checked');
+                checkbox.forEach(function(cb)
+                {
+                    certi.push(cb.value);
+
+                });
+                if(name && !isNaN(age) && gender)
+            {
+                stu.push({name,age,gender,course,certi});
+                //console.log(stu);
+                var news=document.getElementById("new");
+                var row=document.createElement("tr");
+                row.innerHTML="<td>"+name+"</td>"+
+                "<td>"+age+"</td>"+"<td>"+gender+"</td>"+"<td>"+course+"</td>"+"<td>"+certi.join(",")+"</td>";
+                news.appendChild(row);
+                form.reset();
+            } 
+            }
+        </script>
+    
+    </body>
+</html>

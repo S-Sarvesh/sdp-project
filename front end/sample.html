@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kitchen Staff Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .navbar {
+      border-radius: 0 0 15px 15px;
+    }
+    .container {
+      margin-top: 30px;
+    }
+    h2, h4 {
+      color: #343a40;
+    }
+    .order-section {
+      margin-bottom: 30px;
+    }
+    .order-card {
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background: #ffffff;
+      padding: 15px 20px;
+      margin-bottom: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .badge-status {
+      font-size: 0.9rem;
+      padding: 0.5em 0.75em;
+    }
+    .btn-custom {
+      background-color: #28a745;
+      color: white;
+      border-radius: 5px;
+      padding: 10px 20px;
+      transition: all 0.3s;
+    }
+    .btn-custom:hover {
+      background-color: #218838;
+      transform: scale(1.05);
+    }
+    #clock {
+      background-color: #0d6efd;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3">
+  <a class="navbar-brand" href="#">Hotel Takeaway</a>
+  <div class="collapse navbar-collapse">
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+      <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+      <li class="nav-item"><a class="nav-link" href="login.html">Logout</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Main Container -->
+<div class="container">
+
+  <!-- Header Row -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-egg-fried"></i> Kitchen Staff Dashboard</h2>
+    <div id="clock"><i class="bi bi-clock"></i> --:--:--</div>
+  </div>
+
+  <!-- Card Row for Order Summary -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-header">Total Orders</div>
+        <div class="card-body">
+          <h5 class="card-title" id="totalOrders">0</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-warning mb-3">
+        <div class="card-header">Pending Orders</div>
+        <div class="card-body">
+          <h5 class="card-title" id="pendingOrdersCount">0</h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-header">Completed Orders</div>
+        <div class="card-body">
+          <h5 class="card-title" id="completedOrdersCount">0</h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pending Orders -->
+  <div class="order-section">
+    <div class="card p-3">
+      <h4><i class="bi bi-hourglass-split text-warning"></i> Pending Orders (<span id="pendingCount">0</span>)</h4>
+      <div id="pendingOrdersList"></div>
+      <button class="btn btn-custom mt-3" onclick="completeOrder()">Complete First Order</button>
+    </div>
+  </div>
+
+  <!-- Completed Orders -->
+  <div class="order-section">
+    <div class="card p-3">
+      <h4><i class="bi bi-check2-circle text-success"></i> Completed Orders (<span id="completedCount">0</span>)</h4>
+      <div id="completedOrdersList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Stock Sidebar and Admin Message Section -->
+<div id="stockSidebar" class="card p-3 m-4">
+  <h4 class="text-danger">STOCK AVAILABILITY</h4>
+  <select id="stockList" class="form-select mb-2" onchange="updateStockStatus()">
+      <option value="Flour">Flour</option>
+      <option value="Rice">Rice</option>
+      <option value="Vegetables">Vegetables</option>
+      <option value="Meat">Meat</option>
+  </select>
+  <p id="stockStatus" class="text-info">Select an item to see stock availability.</p>
+
+  <h5>Update Stock Quantity</h5>
+  <div class="input-group mb-3">
+      <input type="number" id="stockQuantity" class="form-control" placeholder="Enter new quantity">
+      <button class="btn btn-primary" onclick="updateStock()">Update Stock</button>
+  </div>
+
+  <h5 class="mt-4 text-danger">Notify Admin (Low Stock)</h5>
+  <textarea id="adminMessage" class="form-control mb-2" rows="3" placeholder="Type your message to the admin here..."></textarea>
+  <button class="btn btn-danger" onclick="notifyAdmin()">Send Message</button>
+</div>
+
+<!-- Ding Sound -->
+<audio id="dingSound" src="ding.mp3" preload="auto"></audio>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  let stockData = {
+      "Flour": "Available (10kg)",
+      "Rice": "Low Stock (2kg left)",
+      "Vegetables": "Fresh Stock Available",
+      "Meat": "Out of Stock"
+  };
+  let previousOrderCount = 0;
+
+  $(document).ready(function () {
+    loadOrders();
+    updateClock();
+    setInterval(loadOrders, 3000);
+    setInterval(updateClock, 1000);
+  });
+
+  function updateClock() {
+    const now = new Date();
+    const time = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById("clock").innerHTML = `<i class="bi bi-clock"></i> ${time}`;
+  }
+
+  function loadOrders() {
+    $.get("/cgi-bin/load_orders.cgi", function (orders) {
+      let pendingContent = "";
+      let pendingCount = 0;
+      let totalCount = 0;
+      let completedCount = 0;
+
+      if (Array.isArray(orders) && orders.length > previousOrderCount) {
+        document.getElementById("dingSound").play();
+      }
+      previousOrderCount = orders.length;
+
+      orders.forEach(order => {
+        totalCount++;
+        if (order.status === "Pending") {
+          pendingCount++;
+          pendingContent += `
+            <div class="order-card">
+              <div><strong>#${order.id}</strong> - ${order.dish}</div>
+              <span class="badge bg-warning text-dark badge-status">Pending</span>
+            </div>`;
+        }
+        if (order.status === "Completed") {
+          completedCount++;
+        }
+      });
+
+      $("#totalOrders").text(totalCount);
+      $("#pendingOrdersCount").text(pendingCount);
+      $("#completedOrdersCount").text(completedCount);
+
+      $("#pendingOrdersList").fadeOut(300, function () {
+        $(this).html(pendingContent).fadeIn(300);
+      });
+      $("#pendingCount").text(pendingCount);
+    }, "json");
+
+    $.get("/cgi-bin/load_completed_orders.cgi", function (completedOrders) {
+      let completedContent = "";
+      let completedCount = 0;
+
+      if (Array.isArray(completedOrders)) {
+        completedOrders.forEach(order => {
+          completedCount++;
+          completedContent += `
+            <div class="order-card bg-light">
+              <div><strong>#${order.id}</strong> - ${order.dish}</div>
+              <span class="badge bg-success badge-status">Completed</span>
+            </div>`;
+        });
+      }
+
+      $("#completedOrdersList").fadeOut(300, function () {
+        $(this).html(completedContent).fadeIn(300);
+      });
+      $("#completedCount").text(completedCount);
+    }, "json");
+  }
+
+  function completeOrder() {
+    const firstPendingCard = document.querySelector("#pendingOrdersList .order-card");
+    if (!firstPendingCard) return;
+
+    const orderId = firstPendingCard.querySelector("strong").textContent.replace("#", "");
+
+    fetch("/cgi-bin/kitchen_complete_order.cgi", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: `order_id=${orderId}`
+    })
+    .then(response => response.text())
+    .then(() => loadOrders())
+    .catch(error => console.error("Error completing order:", error));
+  }
+
+  function updateStockStatus() {
+      const selectedItem = document.getElementById("stockList").value;
+      document.getElementById("stockStatus").textContent = stockData[selectedItem];
+  }
+
+  function updateStock() {
+      const selectedItem = document.getElementById("stockList").value;
+      const newQuantity = document.getElementById("stockQuantity").value;
+
+      if (!newQuantity) {
+          alert("Please enter a valid quantity.");
+          return;
+      }
+
+      stockData[selectedItem] = `Updated to ${newQuantity}kg`;
+
+      fetch('/cgi-bin/update_stock.cgi', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: `item=${selectedItem}&quantity=${newQuantity}`
+      })
+      .then(() => {
+          updateStockStatus();
+          alert("Stock updated successfully.");
+      });
+  }
+
+  function notifyAdmin() {
+      const message = document.getElementById("adminMessage").value.trim();
+      if (message === "") {
+          alert("Please enter a message.");
+          return;
+      }
+
+      fetch("/cgi-bin/notify_admin.cgi", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: `message=${encodeURIComponent(message)}`
+      })
+      .then(response => response.text())
+      .then(response => {
+          alert("Message sent to admin.");
+          document.getElementById("adminMessage").value = "";
+      })
+      .catch(error => {
+          console.error("Error sending message:", error);
+          alert("Failed to send message.");
+      });
+  }
+</script>
+
+</body>
+</html>

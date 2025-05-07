@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+<center><h1>Cart</h1>
+<table border="3px">
+    <thead>
+        <th>Item</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Action</th>
+    </thead>
+    <tbody id="cartitem">
+
+    </tbody>
+</table>
+<p id="tprice">Total Price=$0</p>
+<p id="tpricedis"></p>
+<p id="discount"></p>
+
+<h2>Add item</h2>
+<form id="add">
+    <label for="item">Item name:</label><br>
+    <input type="text" name="item" placeholder="Enter the item name"><br>
+    <label for="price">Price:</label><br>
+    <input type="number" name="price" placeholder="Enter the item price"><br>
+    <label for="quantity">Quantity:</label><br>
+
+    <input type="number" name="quantity"><br><br>
+    <button type="button" onclick="addit()">Add item</button>
+</form>
+<script>
+    var cart=[];
+    function addit()
+    {
+        var form=document.getElementById("add");
+        var itname=form.item.value;
+        var itprice=parseFloat(form.price.value);
+        var itquantity=parseInt(form.quantity.value);
+        if(itname && !isNaN(itprice) && itquantity>0)
+    {
+        cart.push({name:itname,price:itprice,quantity:itquantity});
+        console.log(cart);
+        rendercart();
+    }
+    }
+    function rendercart()
+    {
+        var cartit=document.getElementById("cartitem");
+        cartit.innerHTML="";
+        var tprice=0;
+        cart.forEach((item,index)=>{
+            tprice=tprice+(item.price*item.quantity);
+            cartit.innerHTML+=`
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.price}</td>
+                <td><input type="number" value="${item.quantity}" onchange="updatequantity(${index},this.value)"></td>
+                <td><button onclick="removeit(${index})">Remove</button></td>
+
+                </tr>`
+        });
+        var pricee=document.getElementById("tprice");
+        pricee.innerHTML="Total price:$"+tprice
+        
+        var discountmsg=document.getElementById("discount");
+        var msg="";
+        var tpriced=document.getElementById("tpricedis");
+        if(tprice>100)
+        {
+            tprice=tprice*0.9;
+            msg="you recieved a 10% discount";
+
+        }
+        tpriced.innerHTML="Total price after discount"+tprice;
+        discountmsg.innerHTML=msg;
+    }
+        function updatequantity(index,quantity)
+        {
+            if(quantity>0)
+        {
+            card[index].quantity=parseInt(quantity);
+            rendercart();
+        }
+        else{
+            alert("Quantity must be at least 1");
+        }
+        }
+        
+        
+
+    
+</script>
+
+
+</center>
+</body>
+</html>

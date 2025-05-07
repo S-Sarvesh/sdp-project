@@ -1,0 +1,402 @@
+
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin - Hotel Takeaway Management</title>
+
+  <!-- Bootstrap & Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #ffffff);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .navbar {
+      background: linear-gradient(to right, #000000, #343a40);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-link {
+      transition: 0.3s ease-in-out;
+    }
+
+    .nav-link:hover {
+      color: #ffc107 !important;
+      text-shadow: 0 0 5px rgba(255, 193, 7, 0.7);
+    }
+
+    .container-fluid {
+      margin-top: 20px;
+    }
+
+    h2.text-center {
+      background: linear-gradient(to right, #0d6efd, #6610f2);
+      color: white;
+      padding: 15px;
+      border-radius: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .card {
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-left: 5px solid #0d6efd;
+      border-radius: 20px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-success, .collect-btn {
+      transition: all 0.3s ease-in-out;
+    }
+
+    .btn-success:hover, .collect-btn:hover:not(:disabled) {
+      background-color: #157347 !important;
+      transform: scale(1.05);
+    }
+
+    .collect-btn:disabled {
+      background-color: #adb5bd !important;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .highlight {
+      background-color: #f8d7da !important;
+      color: #721c24 !important;
+    }
+
+    .list-group-item {
+      border-radius: 5px;
+      margin-bottom: 5px;
+    }
+
+    .alert {
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    input, select {
+      border-radius: 8px !important;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    #searchForm input {
+      border-radius: 30px;
+      padding: 10px 20px;
+      border: 2px solid #0d6efd;
+    }
+
+    #searchForm button {
+      border-radius: 30px;
+      background: linear-gradient(to right, #0d6efd, #6610f2);
+      border: none;
+      color: white;
+      font-weight: bold;
+    }
+
+    #searchForm button:hover {
+      background: linear-gradient(to right, #6610f2, #0d6efd);
+      transform: scale(1.05);
+    }
+
+    #activeOrdersCardContainer {
+      min-height: 400px;
+    }
+
+    #orderArchiveList {
+      min-height: 200px;
+    }
+
+    .summary-card h3 {
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .summary-card {
+      border-radius: 15px;
+      transition: transform 0.3s ease;
+    }
+
+    .summary-card:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><i class="fas fa-hotel me-2"></i>Hotel Takeaway</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        <li class="nav-item"><a class="nav-link" href="login.html">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <h2 class="text-center"><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard - Hotel Takeaway</h2>
+
+  <div class="row text-center mb-4">
+    <div class="col-md-4">
+      <div class="card p-3 bg-light summary-card">
+        <h5><i class="fas fa-receipt me-2 text-primary"></i>Total Orders</h5>
+        <h3 class="text-primary" id="totalOrders">--</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 bg-light summary-card">
+        <h5><i class="fas fa-check-circle me-2 text-success"></i>Completed</h5>
+        <h3 class="text-success" id="completedOrders">--</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card p-3 bg-light summary-card">
+        <h5><i class="fas fa-hourglass-half me-2 text-warning"></i>Pending</h5>
+        <h3 class="text-warning" id="pendingOrders">--</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6 offset-md-3">
+      <form id="searchForm" class="d-flex">
+        <input type="number" id="searchInput" class="form-control me-2" placeholder="Search by Order ID" required>
+        <button type="submit" class="btn"><i class="fas fa-search me-1"></i>Search</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="searchResult" class="row"></div>
+
+  <div class="row">
+    <div class="col-lg-8 col-md-7 mb-3">
+      <div class="card p-3">
+        <h4 class="text-primary"><i class="fas fa-utensils me-2"></i>ACTIVE ORDERS</h4>
+        <div id="activeOrdersCardContainer" class="row g-3">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4 col-md-5 mb-3">
+      <div class="card p-3">
+        <h4 class="text-success"><i class="fas fa-plus-circle me-2"></i>ORDER MANAGEMENT</h4>
+        <form id="addOrderForm" class="mb-3">
+          <input type="text" name="id" id="orderId" placeholder="Order ID" class="form-control mb-2" readonly required>
+          <input type="text" name="customer" placeholder="Customer Name" class="form-control mb-2" required>
+          <input type="tel" name="phone" id="phoneInput" placeholder="Phone" class="form-control mb-2" pattern="[0-9]{10}" maxlength="10" required>
+          <input type="text" name="address" placeholder="Address" class="form-control mb-2" required>
+          <select name="dish" class="form-select mb-2" required>
+            <option value="" disabled selected>Select Dish</option>
+            <option value="Pasta">Pasta</option>
+            <option value="Pizza">Pizza</option>
+            <option value="Burger">Burger</option>
+            <option value="Salad">Salad</option>
+            <option value="Steak">Steak</option>
+            <option value="Soup">Soup</option>
+          </select>
+          <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus me-1"></i>Add Order</button>
+        </form>
+        <hr>
+        <h5 class="text-danger"><i class="fas fa-archive me-2"></i>ARCHIVED ORDERS</h5>
+        <ul id="orderArchiveList" class="list-group">
+          <li class="list-group-item text-center">
+            <div class="spinner-border text-danger" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="card mt-4 p-3">
+  <h4><i class="bi bi-envelope-fill text-danger"></i> Messages from Kitchen Staff</h4>
+  <ul id="adminMessagesList" class="list-group mt-2"></ul>
+</div>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  function loadAdminMessages() {
+    fetch("/cgi-bin/load_admin_messages.cgi")
+      .then(res => res.json())
+      .then(messages => {
+        const list = document.getElementById("adminMessagesList");
+        list.innerHTML = "";
+        if (messages.length === 0) {
+          list.innerHTML = "<li class='list-group-item'>No messages received.</li>";
+          return;
+        }
+        messages.forEach(msg => {
+          const li = document.createElement("li");
+          li.className = "list-group-item";
+          li.textContent = msg;
+          list.appendChild(li);
+        });
+      });
+  }
+
+  loadAdminMessages();
+  setInterval(loadAdminMessages, 5000);
+  document.getElementById("phoneInput").addEventListener("input", function (e) {
+    this.value = this.value.replace(/[^0-9]/g, '');
+  });
+
+  $(document).ready(function () {
+    loadOrders();
+    loadArchive();
+    generateOrderId();
+
+    setInterval(() => {
+      loadOrders();
+      loadArchive();
+    }, 2000);
+
+    $("#addOrderForm").submit(function (e) {
+      e.preventDefault();
+      const formData = $(this).serialize();
+      $.post("/cgi-bin/add_order.cgi", formData, function (response) {
+        alert(response.status);
+        loadOrders();
+        loadArchive();
+        generateOrderId();
+        $("#addOrderForm")[0].reset();
+      }, "json");
+    });
+    
+
+    $("#searchForm").submit(function (e) {
+      e.preventDefault();
+      const orderId = $("#searchInput").val();
+      $.get("/cgi-bin/search_order.cgi?orderId=" + orderId, function (response) {
+        let resultHtml = '';
+        if (response.found) {
+          resultHtml = `
+            <div class="col-12">
+              <div class="alert alert-success">
+                <strong>Order Found!</strong><br>
+                <strong>Order ID:</strong> ${response.order.id}<br>
+                <strong>Customer:</strong> ${response.order.customer}<br>
+                <strong>Dish:</strong> ${response.order.dish}
+              </div>
+            </div>`;
+          highlightOrder(response.order.id);
+        } else {
+          resultHtml = `
+            <div class="col-12">
+              <div class="alert alert-danger">Order Not Found</div>
+            </div>`;
+        }
+        $("#searchResult").html(resultHtml);
+        $("#searchInput").val('');
+      }, "json");
+    });
+  });
+
+  function loadOrders() {
+    const container = $("#activeOrdersCardContainer");
+    container.html(`<div class="text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>`);
+
+    $.get("/cgi-bin/load_orders.cgi", function (response) {
+      if (Array.isArray(response) && response.length > 0) {
+        let cardHtml = '';
+        let total = 0, completed = 0;
+        response.forEach(function (order) {
+          total++;
+          const isCompleted = order.status.toLowerCase() === 'completed';
+          if (isCompleted) completed++;
+
+          cardHtml += `
+            <div class="col-md-6 col-lg-4" id="order-${order.id}">
+              <div class="card h-100 shadow-sm border-start border-4 border-primary">
+                <div class="card-body">
+                  <h5 class="card-title text-primary">Order #${order.id}</h5>
+                  <p><strong>Customer:</strong> ${order.customer}</p>
+                  <p><strong>Phone:</strong> ${order.phone}</p>
+                  <p><strong>Address:</strong> ${order.address}</p>
+                  <p><strong>Dish:</strong> ${order.dish}</p>
+                  <p><strong>Status:</strong> <span class="badge ${isCompleted ? 'bg-success' : 'bg-warning'}">${order.status}</span></p>
+                  <button class="btn btn-sm collect-btn btn-${isCompleted ? 'success' : 'secondary'} w-100" ${isCompleted ? '' : 'disabled'} onclick="collectOrder(${order.id})">
+                    ${isCompleted ? 'Collect' : 'Waiting...'}
+                  </button>
+                </div>
+              </div>
+            </div>`;
+        });
+        container.html(cardHtml);
+        $("#totalOrders").text(total);
+        $("#completedOrders").text(completed);
+        $("#pendingOrders").text(total - completed);
+      } else {
+        container.html(`<div class="text-muted text-center">No active orders</div>`);
+        $("#totalOrders, #completedOrders, #pendingOrders").text('0');
+      }
+    }, "json").fail(function () {
+      container.html(`<div class="text-danger text-center">Error loading orders</div>`);
+    });
+  }
+
+  function loadArchive() {
+    $("#orderArchiveList").html(`<li class="list-group-item text-center"><div class="spinner-border text-danger" role="status"><span class="visually-hidden">Loading...</span></div></li>`);
+    $.get("/cgi-bin/load_archive.cgi", function (response) {
+      let archiveContent = '';
+      if (Array.isArray(response) && response.length > 0) {
+        response.forEach(function (order) {
+          archiveContent += `<li class="list-group-item">${order.id} - ${order.customer}</li>`;
+        });
+      } else {
+        archiveContent = `<li class="list-group-item text-center text-muted">No archived orders</li>`;
+      }
+      $("#orderArchiveList").html(archiveContent);
+    }, "json");
+  }
+
+  function collectOrder(orderId) {
+    $.get("/cgi-bin/collect_order.cgi?id=" + orderId, function (response) {
+      alert(response.status);
+      loadOrders();
+      loadArchive();
+    }, "json");
+  }
+
+  function generateOrderId() {
+    $.get("/cgi-bin/get_next_id.cgi", function (response) {
+      $("#orderId").val(response.nextOrderId);
+    }, "json");
+  }
+
+  function highlightOrder(orderId) {
+    $("#order-" + orderId).addClass("highlight");
+    setTimeout(() => {
+      $("#order-" + orderId).removeClass("highlight");
+    }, 5000);
+  }
+</script>
+
+</body>
+</html>
